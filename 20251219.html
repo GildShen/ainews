@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年憲政時刻：深層結構分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Background: #F5F5F0 (Warm Beige), Surface: #FFFFFF, Text: #2D2D2D, Accent: #8C3F3F (Conflict Red), Secondary: #4A5568 (Neutral Blue-Grey) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'warm-bg': '#F5F5F0',
+                        'warm-surface': '#FFFFFF',
+                        'text-primary': '#2D2D2D',
+                        'text-secondary': '#5A5A5A',
+                        'accent-red': '#8C3F3F', // For conflict/crisis
+                        'accent-gold': '#C5A065', // For legislation/structure
+                        'accent-blue': '#4A6FA5', // For judiciary
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F5F5F0; color: #2D2D2D; }
+        h1, h2, h3, .serif-font { font-family: 'Noto Serif TC', serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #CBD5E0;
+            transform: translateX(-50%);
+        }
+        .active-tab { border-bottom: 3px solid #4A6FA5; color: #2D2D2D; font-weight: 700; }
+        .inactive-tab { border-bottom: 3px solid transparent; color: #718096; }
+        .inactive-tab:hover { color: #4A6FA5; }
+    </style>
+    <!-- Application Structure Plan: 
+         1. Hero Section: Sets the tone of "History vs News" with a dramatic title.
+         2. Context Timeline: Vertical timeline showing the shift from 2019 to 2024.
+         3. The Flashpoint (Dec 19): Grid of 3 cards (Court, Fiscal, Impeachment) to show the simultaneous nature of the crisis.
+         4. The Judicial Deep Dive: The core of the report. Uses a Chart.js bar chart to visualize the "Quorum Trap" (15 vs 8).
+         5. The Philosophy Debate: Interactive tabs to contrast Majority vs Dissenting opinions, crucial for understanding the nuance.
+         6. Parallel Wars & Conclusion: Textual synthesis of the Fiscal and Impeachment issues, ending with the structural outlook.
+         This structure moves from "What happened" to "Why it happened" to "What it means legally" to "What it means politically".
+    -->
+    <!-- Visualization & Content Choices:
+         1. Timeline: HTML/CSS vertical line. Goal: Show evolution over time.
+         2. Flashpoint Cards: Interactive HTML Cards. Goal: Show simultaneity. Interaction: Hover/Click for details.
+         3. Quorum Chart: Chart.js Bar Chart. Goal: Visualize the mathematical impossibility created by the amendment (15 total vs 8 actual). Justification: A chart makes "paralysis" instantly visible.
+         4. Debate Tabs: JS-powered switching. Goal: Compare complex legal philosophies without overwhelming the user.
+         5. No SVG/Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-warm-surface shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold serif-font text-text-primary tracking-wide">2025 憲政時刻</div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-text-secondary">
+                <button onclick="scrollToSection('context')" class="hover:text-accent-blue transition">歷史背景</button>
+                <button onclick="scrollToSection('flashpoint')" class="hover:text-accent-red transition">12/19爆點</button>
+                <button onclick="scrollToSection('judiciary')" class="hover:text-accent-blue transition">司法對決</button>
+                <button onclick="scrollToSection('conclusion')" class="hover:text-accent-gold transition">結構總結</button>
+            </nav>
+            <div class="md:hidden">
+                <!-- Mobile menu button placeholder -->
+                <button class="text-text-primary font-bold">選單</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-warm-bg pt-16 pb-12 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <span class="inline-block bg-accent-red text-white text-xs px-3 py-1 rounded-full mb-4 tracking-wider">歷史現場</span>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 serif-font leading-tight text-text-primary">
+                12月19日：<br>不是一天的新聞，而是一段歷史的爆點
+            </h1>
+            <p class="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
+                憲法法庭「復活」判決、財劃法僵局與行政立法全面對決。<br>
+                這是一次關於「少數總統 × 多數國會 × 憲法裁判者」的極限測試。
+            </p>
+            <div class="mt-10">
+                <button onclick="scrollToSection('context')" class="bg-text-primary text-white px-8 py-3 rounded shadow hover:bg-gray-800 transition">
+                    開始深度解析
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Context (History) -->
+    <section id="context" class="py-16 bg-white">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold serif-font mb-4 text-text-primary">背景歷史：結構性轉折</h2>
+                <p class="text-text-secondary max-w-2xl mx-auto">
+                    要理解2025年的震盪，必須回到2019年的制度變革與2024年的政治版圖重組。
+                    這是一場累積近十年的能量釋放。
+                </p>
+            </div>
+
+            <div class="relative">
+                <div class="timeline-line hidden md:block"></div>
+                
+                <!-- Timeline Item 1 -->
+                <div class="md:flex justify-between items-center mb-12 relative z-10">
+                    <div class="md:w-5/12 text-right pr-8 mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold text-accent-blue">2019年：憲訴新制實施</h3>
+                        <p class="text-sm text-text-secondary mt-2">
+                            憲法法庭從「抽象釋憲」轉為實質介入政治衝突。年改、同婚、死刑等高度政治化議題成為戰場。司法權能見度提升，政治部門的焦慮隨之增加。
+                        </p>
+                    </div>
+                    <div class="w-8 h-8 bg-accent-blue rounded-full border-4 border-white shadow mx-auto md:mx-0 flex-shrink-0"></div>
+                    <div class="md:w-5/12 pl-8"></div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="md:flex justify-between items-center mb-12 relative z-10">
+                    <div class="md:w-5/12"></div>
+                    <div class="w-8 h-8 bg-accent-gold rounded-full border-4 border-white shadow mx-auto md:mx-0 flex-shrink-0"></div>
+                    <div class="md:w-5/12 pl-8 text-left mt-4 md:mt-0">
+                        <h3 class="text-xl font-bold text-accent-gold">2024年：分裂政府確立</h3>
+                        <p class="text-sm text-text-secondary mt-2">
+                            總統大選後，民進黨掌握行政，國民黨與民眾黨掌握立法。協商退位，修法、人事同意權、程序設計成為新的政治武器。「憲法法庭」被鎖定為必須處理的變數。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="md:flex justify-between items-center relative z-10">
+                    <div class="md:w-5/12 text-right pr-8 mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold text-accent-red">2024年10月：人事與修法夾擊</h3>
+                        <p class="text-sm text-text-secondary mt-2">
+                            七位大法官任期屆滿，人事案未過，僅剩八人。立法院修正《憲法訴訟法》，拉高判決門檻至法定總額，試圖技術性癱瘓法庭運作。
+                        </p>
+                    </div>
+                    <div class="w-8 h-8 bg-accent-red rounded-full border-4 border-white shadow mx-auto md:mx-0 flex-shrink-0"></div>
+                    <div class="md:w-5/12 pl-8"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: The Flashpoint (Dec 19) -->
+    <section id="flashpoint" class="py-16 bg-warm-bg">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold serif-font mb-4 text-text-primary">12月19日：三線戰場齊發</h2>
+                <p class="text-text-secondary max-w-3xl mx-auto">
+                    這一天，三項憲政衝突同時浮上檯面。點擊下方卡片查看每個戰場的深層意義。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1: Judiciary -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-accent-blue card-hover cursor-pointer" onclick="updateDetails('judiciary-detail')">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">⚖️</span>
+                        <h3 class="text-xl font-bold text-gray-800">憲法法庭復活</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        憲法法庭宣告《憲法訴訟法》修正條文違憲失效，恢復舊制運作。
+                    </p>
+                    <button class="text-accent-blue text-sm font-bold">查看深層結構 &rarr;</button>
+                </div>
+
+                <!-- Card 2: Fiscal -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-accent-gold card-hover cursor-pointer" onclick="updateDetails('fiscal-detail')">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">💰</span>
+                        <h3 class="text-xl font-bold text-gray-800">財劃法僵局</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        行政院長拒絕副署修正案，法案無法公布。行政權實質否決立法。
+                    </p>
+                    <button class="text-accent-gold text-sm font-bold">查看深層結構 &rarr;</button>
+                </div>
+
+                <!-- Card 3: Impeachment -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-accent-red card-hover cursor-pointer" onclick="updateDetails('impeachment-detail')">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">⚡</span>
+                        <h3 class="text-xl font-bold text-gray-800">彈劾總統</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        在野黨啟動彈劾程序，指控總統支持不副署及藐視國會。
+                    </p>
+                    <button class="text-accent-red text-sm font-bold">查看深層結構 &rarr;</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Detail Area -->
+            <div id="detail-area" class="mt-8 bg-white p-8 rounded-lg shadow-md border border-gray-100 transition-all duration-300">
+                <h4 id="detail-title" class="text-2xl font-bold mb-4 text-text-primary">點擊上方卡片以查看分析</h4>
+                <p id="detail-content" class="text-text-secondary leading-relaxed">
+                    這些事件並非獨立發生，而是憲政體制在高度對立下的運作極限展現。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The Verdict (Judiciary Deep Dive) -->
+    <section id="judiciary" class="py-16 bg-white">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- Left: The Visual Trap -->
+                <div>
+                    <h2 class="text-3xl font-bold serif-font mb-6 text-text-primary">癱瘓裁判者：制度性失能</h2>
+                    <p class="text-text-secondary mb-6">
+                        爭議核心在於《憲法訴訟法》修正案。透過將「現有總額」連結至「法定總額」，在只有8位大法官在任的情況下，憲法法庭在數學上根本無法運作。這是否構成對司法權的實質封鎖？
+                    </p>
+                    
+                    <!-- Chart Container -->
+                    <div class="chart-container bg-warm-bg rounded-lg p-4 shadow-inner">
+                        <canvas id="quorumChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-gray-500 mt-2">
+                        圖表：修正案下的門檻 vs. 實際現狀
+                    </p>
+                </div>
+
+                <!-- Right: The Philosophy Battle -->
+                <div>
+                    <h2 class="text-3xl font-bold serif-font mb-6 text-text-primary">12/19 判決：兩種憲政哲學</h2>
+                    <p class="text-text-secondary mb-6">
+                        憲法法庭最終宣告修法違憲，但這並非全體一致。三位未參與評議的大法官（楊惠欽、蔡宗珍、朱富美）提出了截然不同的憲政觀點。
+                    </p>
+
+                    <!-- Interactive Tabs -->
+                    <div class="flex border-b border-gray-200 mb-6">
+                        <button id="tab-majority" class="flex-1 pb-3 text-center active-tab transition" onclick="switchOpinion('majority')">
+                            多數意見<br><span class="text-xs font-normal">防衛性反擊</span>
+                        </button>
+                        <button id="tab-dissent" class="flex-1 pb-3 text-center inactive-tab transition" onclick="switchOpinion('dissent')">
+                            不同意見 (三位大法官)<br><span class="text-xs font-normal">程序優位</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div id="opinion-content" class="bg-warm-bg p-6 rounded-lg min-h-[300px]">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Conclusion -->
+    <section id="conclusion" class="py-16 bg-warm-bg">
+        <div class="container mx-auto px-4 max-w-4xl text-center">
+            <h2 class="text-3xl font-bold serif-font mb-8 text-text-primary">結語：這不是勝負，而是耐受度測試</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-12">
+                <div class="bg-white p-6 rounded shadow-sm">
+                    <h4 class="font-bold text-accent-red mb-2">行政權的極限回應</h4>
+                    <p class="text-sm text-gray-600">
+                        針對財劃法，行政院長拒絕副署，這在憲政史上極為罕見。這引發了「行政權是否得以實質否決立法」的根本爭議，被視為憲法忠誠下的最後防線，或逾越權力界線。
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded shadow-sm">
+                    <h4 class="font-bold text-accent-red mb-2">政治性彈劾</h4>
+                    <p class="text-sm text-gray-600">
+                        彈劾案通過門檻極高，其實際功能在於「極限施壓」、「政治動員」與「重塑敘事」。這與其說是法律程序，不如說是一種強烈的政治訊號。
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-text-primary text-warm-surface p-8 rounded-lg shadow-lg">
+                <p class="text-lg serif-font leading-relaxed">
+                    「12月19日的憲政震盪，暫時解除司法權的結構性困局，卻未終結行政與立法之間的深層對立。<br><br>
+                    它所揭示的，不是誰『贏了』，而是台灣憲政體制在高度對立下的運作極限：當協商失效、信任耗盡，制度將被不斷推向邊界，直到某個機制承受不了為止。」
+                </p>
+                <div class="mt-6 border-t border-gray-600 pt-4">
+                    <p class="text-sm text-gray-400">
+                        未來真正的關鍵不在於下一次判決，而在於政治行動者是否仍願意把憲法視為共同生活的框架。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white py-8 border-t border-gray-200">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 憲政時刻分析報告 | Source: 2025_constitutional_moment.md</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data Storage
+        const detailData = {
+            'judiciary-detail': {
+                title: "憲法法庭復活：司法權的防衛",
+                content: "12月19日判決的核心並非單一條文，而是回應根本問題：立法權是否可透過程序設計，使憲法裁判機關實質無法運作？多數意見認為，權力分立下，立法權不得以程序規範實質剝奪司法權行使。判決結果使憲法法庭回歸舊制門檻，恢復以實際在任人數運作的可能性。"
+            },
+            'fiscal-detail': {
+                title: "財劃法僵局：拒絕副署",
+                content: "在覆議失敗後，行政院長選擇拒絕副署《財政收支劃分法》修正案，導致法案無法公布。行政院主張新制將對中央財政造成結構性壓力，影響國防與社福。此舉直接挑戰了行政與立法的權力邊界，支持者視為憲法忠誠的展現，反對者則認為逾越行政權。"
+            },
+            'impeachment-detail': {
+                title: "彈劾總統：政治訊號",
+                content: "在野黨啟動彈劾，理由集中於支持不副署及藐視國會。從制度面看，彈劾通過門檻極高，成功率低。但在政治層面，這是對行政權的極限施壓，並為後續選舉進行動員，試圖重塑「違憲責任歸屬」的政治敘事。"
+            }
+        };
+
+        const opinionData = {
+            'majority': {
+                title: "多數意見：防衛性民主",
+                points: [
+                    "立法權不得以程序規範實質剝奪司法權。",
+                    "正當立法程序不得鎖定特定機關進行惡意癱瘓。",
+                    "憲政秩序可能中斷時，必須優先確保裁判機關的生存與運作。",
+                    "結論：修正條文違憲失效，回歸舊制。"
+                ]
+            },
+            'dissent': {
+                title: "不同意見：程序優位 (楊惠欽、蔡宗珍、朱富美)",
+                points: [
+                    "<strong>程序優位：</strong>合法組成是審判權存在的前提。若依新法法庭組成不合法，即無權審判新法本身。",
+                    "<strong>警惕司法擴權：</strong>質疑「由司法自行突破法律限制」的正當性，擔憂削弱法治可預測性。",
+                    "<strong>空轉作為代價：</strong>「讓制度暫時失靈」是代價高昂但合法的後果；「以破格方式維持運作」則是風險更高的違憲先例。"
+                ]
+            }
+        };
+
+        // Functions
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function updateDetails(key) {
+            const area = document.getElementById('detail-area');
+            const title = document.getElementById('detail-title');
+            const content = document.getElementById('detail-content');
+
+            // Simple fade effect
+            area.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                if (detailData[key]) {
+                    title.textContent = detailData[key].title;
+                    content.textContent = detailData[key].content;
+                    
+                    // Highlight logic (reset others)
+                    // In a full app, we'd toggle active classes on the cards
+                }
+                area.style.opacity = '1';
+            }, 200);
+        }
+
+        function switchOpinion(type) {
+            const container = document.getElementById('opinion-content');
+            const tabMaj = document.getElementById('tab-majority');
+            const tabDis = document.getElementById('tab-dissent');
+            const data = opinionData[type];
+
+            // Update Tabs
+            if (type === 'majority') {
+                tabMaj.className = "flex-1 pb-3 text-center active-tab transition cursor-pointer";
+                tabDis.className = "flex-1 pb-3 text-center inactive-tab transition cursor-pointer";
+            } else {
+                tabMaj.className = "flex-1 pb-3 text-center inactive-tab transition cursor-pointer";
+                tabDis.className = "flex-1 pb-3 text-center active-tab transition cursor-pointer";
+            }
+
+            // Update Content
+            let html = `<h3 class="text-xl font-bold mb-4 ${type === 'majority' ? 'text-accent-blue' : 'text-gray-600'}">${data.title}</h3>`;
+            html += `<ul class="space-y-3">`;
+            data.points.forEach(point => {
+                html += `<li class="flex items-start"><span class="mr-2 mt-1 text-sm">•</span><span>${point}</span></li>`;
+            });
+            html += `</ul>`;
+            
+            container.innerHTML = html;
+        }
+
+        // Initialize Chart.js
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Opinion Tab
+            switchOpinion('majority');
+
+            // Initialize Chart
+            const ctx = document.getElementById('quorumChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['法定總額 (理想)', '新法門檻 (必須)', '實際在任 (現實)'],
+                    datasets: [{
+                        label: '大法官人數',
+                        data: [15, 15, 8], // 10 was old quorum (2/3 of 15), new law tied to total 15
+                        backgroundColor: [
+                            'rgba(200, 200, 200, 0.5)', // Statutory Total
+                            'rgba(140, 63, 63, 0.8)',   // The Trap (New Law Requirement)
+                            'rgba(74, 111, 165, 0.8)'   // Reality
+                        ],
+                        borderColor: [
+                            'rgba(200, 200, 200, 1)',
+                            'rgba(140, 63, 63, 1)',
+                            'rgba(74, 111, 165, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 16,
+                            title: {
+                                display: true,
+                                text: '人數'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                afterBody: function(context) {
+                                    if (context[0].dataIndex === 1) return "新法將判決門檻鎖定為法定總額(15)的2/3甚至更高，導致必須有10-15人出席。";
+                                    if (context[0].dataIndex === 2) return "因人事案卡關，實際僅剩8人。無法達到新法要求的門檻，導致法庭癱瘓。";
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: '憲法法庭人數與門檻差距 (癱瘓陷阱)',
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
